@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 class Register extends Component {
   constructor() {
@@ -11,12 +12,26 @@ class Register extends Component {
       error: {}
     };
   }
-  handleChange=(event)=>{
-      this.setState({
-          [event.target.name]:event.target.value
-      })
+  handleChange = event => {
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  };
+  handleSubmit = event => {
+    event.preventDefault();
+    const newUser = {
+      name: this.state.name,
+      email: this.state.email,
+      password: this.state.password,
+      verifyPassword: this.state.verifyPassword
+    };
+    console.log(newUser);
 
-  }
+    axios
+      .post("/api/users/register", newUser)
+      .then(res => console.log(res.data))
+      .catch(err => this.setState({ error: err.response.data }));
+  };
   render() {
     return (
       <div className="register">
@@ -36,7 +51,6 @@ class Register extends Component {
                     name="name"
                     value={this.state.name}
                     onChange={this.handleChange}
-
                     required
                   />
                 </div>
@@ -48,7 +62,6 @@ class Register extends Component {
                     name="email"
                     value={this.state.email}
                     onChange={this.handleChange}
-
                     required
                   />
                   <small className="form-text text-muted">
@@ -64,7 +77,6 @@ class Register extends Component {
                     name="password"
                     value={this.state.password}
                     onChange={this.handleChange}
-
                   />
                 </div>
                 <div className="form-group">
@@ -72,12 +84,16 @@ class Register extends Component {
                     type="password"
                     className="form-control form-control-lg"
                     placeholder="Confirm Password"
-                    name="password2"
+                    name="verifyPassword"
                     value={this.state.verifyPassword}
                     onChange={this.handleChange}
                   />
                 </div>
-                <input type="submit" className="btn btn-info btn-block mt-4" />
+                <input
+                  type="submit"
+                  className="btn btn-info btn-block mt-4"
+                  onClick={this.handleSubmit}
+                />
               </form>
             </div>
           </div>
